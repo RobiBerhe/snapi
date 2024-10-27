@@ -1,0 +1,21 @@
+{
+    "tests":{
+        "base_url":"http://localhost:5050",
+        "apis":[
+            {
+                "name":"create customer",
+                "method":"post",
+                "route":"/",
+                "payload":{},
+                "expects":{}
+            },
+            {
+                "name":"get customer",
+                "method":"get",
+                "route":"/",
+                "payload":{},
+                "expects":{}
+            }
+        ]
+    }
+}

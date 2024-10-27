@@ -1,0 +1,15 @@
+{
+    "tests":{
+        "base_url":"https://jsonplaceholder.typicode.com",
+        "apis":[
+          
+            {
+                "name":"get customer",
+                "method":"get",
+                "route":"/users",
+                "payload":{},
+                "expects":{}
+            }
+        ]
+    }
+}

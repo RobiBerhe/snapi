@@ -1,0 +1,8 @@
+tests:
+  baseURL: http://localhost:8080/api # host
+  api:
+    -name: create a customer
+    -route: /customer/create
+    -method: post
+    -payload:
+

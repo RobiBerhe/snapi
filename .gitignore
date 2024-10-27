@@ -1,0 +1,49 @@
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# todo file
+TODO
+
+
+# Dependency directories
+/vendor/
+
+# Build output
+/bin/
+/build/
+
+# env file
+.env
+
+# Compiled object files and cache
+*.o
+*.a
+*.lo
+*.la
+*.lai
+*.gch
+
+# Test binary
+*.test
+
+# IDE-specific files (optional, depending on the IDE you use)
+.vscode/
+.idea/
+
+# Go workspace and cache
+/.vscode/
+*.code-workspace
+/.go/
+
+# macOS-specific files
+.DS_Store
+
+# Temporary or generated files
+*.log
+*.tmp
+*.temp
