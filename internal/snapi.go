@@ -22,12 +22,6 @@ type TestSpecJSON struct {
 	Tests struct {
 		BaseURL string `json:"base_url"`
 		Apis    []API  `json:"apis"`
-		// Apis    []struct {
-		// 	Name    string      `json:"name"`
-		// 	Method  string      `json:"method"`
-		// 	Route   string      `json:"route"`
-		// 	Payload interface{} `json:"payload"`
-		// } `json:"apis"`
 	} `json:"tests"`
 	file *os.File
 }
@@ -80,12 +74,6 @@ func (ta *TestAPI) call(api *API) {
 	} else if strings.ToUpper(api.Method) == "GET" {
 		data = nil
 	}
-
-	// if strings.ToUpper(api.Method) == "POST" {
-	// data, err := json.Marshal(api.Payload)
-	// if err != nil {
-	// 	log.Fatalf("couldn't marshal values to json %v", err)
-	// }
 	req, err = http.NewRequest(strings.ToUpper(api.Method), fmt.Sprintf("%v%v", base, api.Route), bytes.NewBuffer(data))
 	if err != nil {
 		log.Fatalf("error creating a request object for %v, fails with error %v", api.Name, err)
@@ -103,28 +91,6 @@ func (ta *TestAPI) call(api *API) {
 		log.Fatalf("error reading response body %v", err)
 	}
 	log.Printf("response body : %v", string(body))
-
-	// }
-	// if strings.ToUpper(api.Method) == "GET" {
-	// req, err := http.NewRequest("GET", fmt.Sprintf("%v%v", base, api.Route), nil)
-	// if err != nil {
-	// 	log.Fatalf("error creating a request object for %v, fails with error %v", api.Name, err)
-	// }
-	// req.Header.Set("Content-Type", "application/json")
-	// client := &http.Client{}
-	// res, err := client.Do(req)
-	// if err != nil {
-	// 	log.Fatalf("request failed :%v", err)
-	// }
-	// defer res.Body.Close()
-	// log.Println("status code : ", res.StatusCode)
-	// body, err := io.ReadAll(res.Body)
-	// if err != nil {
-	// 	log.Fatalf("error reading response body %v", err)
-	// }
-	// log.Printf("response body : %v", string(body))
-	// }
-
 }
 
 func (ta *TestAPI) Run() {
