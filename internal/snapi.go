@@ -91,17 +91,15 @@ func (ta *TestAPI) call(api *API) []byte {
 		log.Fatalf("request failed :%v", err)
 	}
 	defer res.Body.Close()
-	log.Println("status code : ", res.StatusCode)
+	// log.Println("status code : ", res.StatusCode)
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		log.Fatalf("error reading response body %v", err)
 	}
-	// log.Printf("response body : %v", string(body))
 	return body
 }
 
 func (ta *TestAPI) passExpects(body []byte, api *API) error {
-	// log.Println("the api body is expected to be : ", api.Expects)
 	exData, exerr := json.Marshal(api.Expects)
 	if exerr != nil {
 		return exerr
@@ -114,9 +112,7 @@ func (ta *TestAPI) passExpects(body []byte, api *API) error {
 	if err := json.Unmarshal(body, &j2); err != nil {
 		log.Fatal("error :", err)
 	}
-	// log.Println("j1 :> ", j1, " and j2 :> ", j2)
 	if reflect.DeepEqual(j1, j2) {
-		log.Println("EQUAL..")
 		return nil
 	}
 	diff := cmp.Diff(j1, j2)
@@ -125,15 +121,14 @@ func (ta *TestAPI) passExpects(body []byte, api *API) error {
 
 func (ta *TestAPI) Run() {
 	apis := ta.TestSpecJSON.Tests.Apis
+	log.Println("-----------TESTS RUNNING-----------")
 	for _, api := range apis {
-		log.Println("Name : ", api.Name)
-		log.Println("Method : ", api.Method)
-		log.Println("Route : ", api.Route)
+		log.Printf("Now checking :%v\n", api.Name)
 		response := ta.call(&api)
-		log.Printf("the response for %v is :>> %v ", api.Name, string(response))
 		err := ta.passExpects(response, &api)
 		if err != nil {
-			log.Fatalf("API test fails at:%v with reason :%v\n", api.Name, err.Error())
+			log.Fatalf("API test fails at:'%v'  >>:%v\n", api.Name, err.Error())
 		}
 	}
+	log.Println("all tests have passed")
 }

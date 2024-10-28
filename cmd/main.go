@@ -8,7 +8,9 @@ import (
 
 func main() {
 	args := os.Args[1:]
-	log.Println("os args :> ", args)
+	if len(args) != 1 {
+		log.Fatal("you need to pass the test file")
+	}
 	path := args[0]
 	log.Println("file path :> ", path)
 	tests := internal.NewTestSpecJson(path).ReadJSON()
