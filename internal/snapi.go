@@ -65,7 +65,8 @@ func (ta *TestAPI) call(api *API) {
 	var data []byte
 	var err error
 
-	if strings.ToUpper(api.Method) == "POST" {
+	apiMethod := strings.ToUpper(api.Method)
+	if apiMethod == "POST" || apiMethod == "PUT" || apiMethod == "PATCH" {
 		data, err = json.Marshal(api.Payload)
 		if err != nil {
 			log.Fatalf("couldn't marshal values to json %v", err)
