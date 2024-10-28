@@ -3,12 +3,16 @@ package internal
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
+	"reflect"
 	"strings"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 type API struct {
@@ -16,6 +20,7 @@ type API struct {
 	Method  string      `json:"method"`
 	Route   string      `json:"route"`
 	Payload interface{} `json:"payload"`
+	Expects interface{} `json:"expects"`
 }
 
 type TestSpecJSON struct {
@@ -59,7 +64,7 @@ func Test(ts *TestSpecJSON) *TestAPI {
 	return &TestAPI{TestSpecJSON: *ts}
 }
 
-func (ta *TestAPI) call(api *API) {
+func (ta *TestAPI) call(api *API) []byte {
 	base := ta.TestSpecJSON.Tests.BaseURL
 	var req *http.Request
 	var data []byte
@@ -91,7 +96,31 @@ func (ta *TestAPI) call(api *API) {
 	if err != nil {
 		log.Fatalf("error reading response body %v", err)
 	}
-	log.Printf("response body : %v", string(body))
+	// log.Printf("response body : %v", string(body))
+	return body
+}
+
+func (ta *TestAPI) passExpects(body []byte, api *API) error {
+	// log.Println("the api body is expected to be : ", api.Expects)
+	exData, exerr := json.Marshal(api.Expects)
+	if exerr != nil {
+		return exerr
+	}
+
+	var j1, j2 interface{}
+	if err := json.Unmarshal(exData, &j1); err != nil {
+		log.Fatal("error :", err)
+	}
+	if err := json.Unmarshal(body, &j2); err != nil {
+		log.Fatal("error :", err)
+	}
+	// log.Println("j1 :> ", j1, " and j2 :> ", j2)
+	if reflect.DeepEqual(j1, j2) {
+		log.Println("EQUAL..")
+		return nil
+	}
+	diff := cmp.Diff(j1, j2)
+	return errors.New(diff)
 }
 
 func (ta *TestAPI) Run() {
@@ -100,6 +129,11 @@ func (ta *TestAPI) Run() {
 		log.Println("Name : ", api.Name)
 		log.Println("Method : ", api.Method)
 		log.Println("Route : ", api.Route)
-		ta.call(&api)
+		response := ta.call(&api)
+		log.Printf("the response for %v is :>> %v ", api.Name, string(response))
+		err := ta.passExpects(response, &api)
+		if err != nil {
+			log.Fatalf("API test fails at:%v with reason :%v\n", api.Name, err.Error())
+		}
 	}
 }
