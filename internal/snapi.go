@@ -16,11 +16,12 @@ import (
 )
 
 type API struct {
-	Name    string      `json:"name"`
-	Method  string      `json:"method"`
-	Route   string      `json:"route"`
-	Payload interface{} `json:"payload"`
-	Expects interface{} `json:"expects"`
+	Name       string      `json:"name"`
+	Method     string      `json:"method"`
+	Route      string      `json:"route"`
+	Payload    interface{} `json:"payload"`
+	Expects    interface{} `json:"expects"`
+	StatusCode int         `json:"status"`
 }
 
 type TestSpecJSON struct {
@@ -64,7 +65,7 @@ func Test(ts *TestSpecJSON) *TestAPI {
 	return &TestAPI{TestSpecJSON: *ts}
 }
 
-func (ta *TestAPI) call(api *API) []byte {
+func (ta *TestAPI) call(api *API) ([]byte, int) {
 	base := ta.TestSpecJSON.Tests.BaseURL
 	var req *http.Request
 	var data []byte
@@ -91,12 +92,11 @@ func (ta *TestAPI) call(api *API) []byte {
 		log.Fatalf("request failed :%v", err)
 	}
 	defer res.Body.Close()
-	// log.Println("status code : ", res.StatusCode)
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		log.Fatalf("error reading response body %v", err)
 	}
-	return body
+	return body, res.StatusCode
 }
 
 func (ta *TestAPI) passExpects(body []byte, api *API) error {
@@ -119,15 +119,25 @@ func (ta *TestAPI) passExpects(body []byte, api *API) error {
 	return errors.New(diff)
 }
 
+func (ta *TestAPI) PassStatus(status int, apiStatus int) error {
+	if status == apiStatus {
+		return nil
+	}
+	return fmt.Errorf("expected status %d but found %v", apiStatus, status)
+}
+
 func (ta *TestAPI) Run() {
 	apis := ta.TestSpecJSON.Tests.Apis
 	log.Println("-----------TESTS RUNNING-----------")
 	for _, api := range apis {
 		log.Printf("Now checking :%v\n", api.Name)
-		response := ta.call(&api)
+		response, status := ta.call(&api)
 		err := ta.passExpects(response, &api)
 		if err != nil {
 			log.Fatalf("API test fails at:'%v'  >>:%v\n", api.Name, err.Error())
+		}
+		if err := ta.PassStatus(status, api.StatusCode); err != nil {
+			log.Fatal(err.Error())
 		}
 	}
 	log.Println("all tests have passed")

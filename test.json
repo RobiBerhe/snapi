@@ -8,6 +8,7 @@
                 "method":"get",
                 "route":"/users/1",
                 "payload":{},
+                "status":200,
                 "expects":{
                     "id": 1,
                     "name": "Leanne Graham",
