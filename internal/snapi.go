@@ -15,13 +15,20 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
-type API struct {
-	Name       string      `json:"name"`
-	Method     string      `json:"method"`
-	Route      string      `json:"route"`
-	Payload    interface{} `json:"payload"`
-	Expects    interface{} `json:"expects"`
+type Expects struct {
 	StatusCode int         `json:"status"`
+	Body       interface{} `json:"body"`
+	Exclude    []string    `json:"exclude"`
+}
+
+type API struct {
+	Name    string      `json:"name"`
+	Method  string      `json:"method"`
+	Route   string      `json:"route"`
+	Payload interface{} `json:"payload"`
+	// Expects    interface{} `json:"expects"`
+	Expects    Expects `json:"expects"`
+	StatusCode int     `json:"status"`
 }
 
 type TestSpecJSON struct {
@@ -100,7 +107,9 @@ func (ta *TestAPI) call(api *API) ([]byte, int) {
 }
 
 func (ta *TestAPI) passExpects(body []byte, api *API) error {
-	exData, exerr := json.Marshal(api.Expects)
+	// exData, exerr := json.Marshal(api.Expects)
+	exData, exerr := json.Marshal(api.Expects.Body)
+	log.Println("excluded fields will be :> ", api.Expects.Exclude)
 	if exerr != nil {
 		return exerr
 	}
@@ -115,11 +124,27 @@ func (ta *TestAPI) passExpects(body []byte, api *API) error {
 	if reflect.DeepEqual(j1, j2) {
 		return nil
 	}
-	diff := cmp.Diff(j1, j2)
-	return errors.New(diff)
+	opts := cmp.FilterPath(func(p cmp.Path) bool {
+		for _, field := range api.Expects.Exclude {
+			if strings.Contains(p.GoString(), field) {
+				return true
+			}
+		}
+		return false
+	}, cmp.Ignore())
+	// diff := cmp.Diff(j1, j2)
+	diff := cmp.Diff(j1, j2, opts)
+	log.Println("diff :> ", diff)
+	if diff != "" {
+		return errors.New(diff)
+	}
+	return nil
 }
 
 func (ta *TestAPI) PassStatus(status int, apiStatus int) error {
+	if apiStatus <= 0 {
+		return nil
+	}
 	if status == apiStatus {
 		return nil
 	}
@@ -136,7 +161,8 @@ func (ta *TestAPI) Run() {
 		if err != nil {
 			log.Fatalf("API test fails at:'%v'  >>:%v\n", api.Name, err.Error())
 		}
-		if err := ta.PassStatus(status, api.StatusCode); err != nil {
+		// if err := ta.PassStatus(status, api.StatusCode); err != nil {
+		if err := ta.PassStatus(status, api.Expects.StatusCode); err != nil {
 			log.Fatal(err.Error())
 		}
 	}

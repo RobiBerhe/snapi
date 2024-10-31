@@ -8,8 +8,10 @@
                 "method":"get",
                 "route":"/users/1",
                 "payload":{},
-                "status":200,
                 "expects":{
+                  "status":200,
+                  "exclude":["id"],
+                   "body":{
                     "id": 1,
                     "name": "Leanne Graham",
                     "username": "Bret",
@@ -31,6 +33,7 @@
                       "catchPhrase": "Multi-layered client-server neural-net",
                       "bs": "harness real-time e-markets"
                     }
+                   }
                 }
             }
         ]
