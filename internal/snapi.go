@@ -22,13 +22,12 @@ type Expects struct {
 }
 
 type API struct {
-	Name    string      `json:"name"`
-	Method  string      `json:"method"`
-	Route   string      `json:"route"`
-	Payload interface{} `json:"payload"`
-	// Expects    interface{} `json:"expects"`
-	Expects    Expects `json:"expects"`
-	StatusCode int     `json:"status"`
+	Name       string      `json:"name"`
+	Method     string      `json:"method"`
+	Route      string      `json:"route"`
+	Payload    interface{} `json:"payload"`
+	Expects    Expects     `json:"expects"`
+	StatusCode int         `json:"status"`
 }
 
 type TestSpecJSON struct {
@@ -50,7 +49,6 @@ func NewTestSpecJson(filePath string) *TestSpecJSON {
 }
 
 func (ts *TestSpecJSON) ReadJSON() *TestSpecJSON {
-	// var spec TestSpecJSON
 	decoder := json.NewDecoder(ts.file)
 	if err := decoder.Decode(&ts); err != nil {
 		log.Fatalf("error decoding json file:%v", err)
@@ -107,7 +105,6 @@ func (ta *TestAPI) call(api *API) ([]byte, int) {
 }
 
 func (ta *TestAPI) passExpects(body []byte, api *API) error {
-	// exData, exerr := json.Marshal(api.Expects)
 	exData, exerr := json.Marshal(api.Expects.Body)
 	log.Println("excluded fields will be :> ", api.Expects.Exclude)
 	if exerr != nil {
@@ -132,9 +129,7 @@ func (ta *TestAPI) passExpects(body []byte, api *API) error {
 		}
 		return false
 	}, cmp.Ignore())
-	// diff := cmp.Diff(j1, j2)
 	diff := cmp.Diff(j1, j2, opts)
-	log.Println("diff :> ", diff)
 	if diff != "" {
 		return errors.New(diff)
 	}
@@ -161,7 +156,6 @@ func (ta *TestAPI) Run() {
 		if err != nil {
 			log.Fatalf("API test fails at:'%v'  >>:%v\n", api.Name, err.Error())
 		}
-		// if err := ta.PassStatus(status, api.StatusCode); err != nil {
 		if err := ta.PassStatus(status, api.Expects.StatusCode); err != nil {
 			log.Fatal(err.Error())
 		}
