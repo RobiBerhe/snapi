@@ -22,7 +22,7 @@ type Expects struct {
 }
 
 type API struct {
-	Pass       bool        `json:"pass"`
+	Skip       bool        `json:"skip"`
 	Name       string      `json:"name"`
 	Method     string      `json:"method"`
 	Route      string      `json:"route"`
@@ -151,8 +151,8 @@ func (ta *TestAPI) Run() {
 	log.Println("-----------TESTS RUNNING-----------")
 	for _, api := range apis {
 		log.Printf("Now checking :%v\n", api.Name)
-		if api.Pass {
-			log.Println("passing :> ", api.Name)
+		if api.Skip {
+			log.Println("skiping :> ", api.Name)
 			continue
 		}
 		response, status := ta.call(&api)
