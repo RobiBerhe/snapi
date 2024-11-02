@@ -26,7 +26,7 @@
             {
               "name":"get single user",
               "method":"GET",
-              "route":"/users/2",
+              "route":"/users/1",
               "payload":{
                 "name":"abebe",
                 "email":"abebe@gmail.com"
@@ -41,7 +41,35 @@
                   }
                  }
               }
-          }
+          },
+          {
+            "name":"get all users",
+            "method":"GET",
+            "route":"/users",
+            "expects":{
+              "status":200,
+              "exclude":["id","created_at"],
+               "body":{
+                "users": [
+                          {
+                            "id": 1,
+                            "name": "John Doe",
+                            "email": "john@example.com"
+                          },
+                          {
+                            "id": 2,
+                            "name": "Jane Smith",
+                            "email": "jane@example.com"
+                          },
+                          {
+                            "id": 3,
+                            "name": "Bob Wilson",
+                            "email": "bob@example.com"
+                          }
+	                    ]
+               }
+            }
+        }
 
         ]
     }
