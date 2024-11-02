@@ -22,6 +22,7 @@ type Expects struct {
 }
 
 type API struct {
+	Pass       bool        `json:"pass"`
 	Name       string      `json:"name"`
 	Method     string      `json:"method"`
 	Route      string      `json:"route"`
@@ -82,7 +83,6 @@ func (ta *TestAPI) call(api *API) ([]byte, int) {
 		if err != nil {
 			log.Fatalf("couldn't marshal values to json %v", err)
 		}
-		log.Println("data : ", data)
 	} else if strings.ToUpper(api.Method) == "GET" {
 		data = nil
 	}
@@ -151,6 +151,10 @@ func (ta *TestAPI) Run() {
 	log.Println("-----------TESTS RUNNING-----------")
 	for _, api := range apis {
 		log.Printf("Now checking :%v\n", api.Name)
+		if api.Pass {
+			log.Println("passing :> ", api.Name)
+			continue
+		}
 		response, status := ta.call(&api)
 		err := ta.passExpects(response, &api)
 		if err != nil {
