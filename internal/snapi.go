@@ -12,6 +12,7 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/fatih/color"
 	"github.com/google/go-cmp/cmp"
 )
 
@@ -158,11 +159,14 @@ func (ta *TestAPI) Run() {
 		response, status := ta.call(&api)
 		err := ta.passExpects(response, &api)
 		if err != nil {
-			log.Fatalf("API test fails at:'%v'  >>:%v\n", api.Name, err.Error())
+			whiteOnRed := color.New(color.FgWhite, color.BgRed).SprintFunc()
+			errStr := fmt.Sprintf("API test fails at:'%v'  >>:%v\n", api.Name, err.Error())
+			log.Fatal(whiteOnRed(errStr))
 		}
 		if err := ta.PassStatus(status, api.Expects.StatusCode); err != nil {
 			log.Fatal(err.Error())
 		}
 	}
-	log.Println("all tests have passed")
+	whiteOnGreen := color.New(color.FgWhite, color.BgGreen).SprintFunc()
+	log.Println(whiteOnGreen("All tests have passed"))
 }
