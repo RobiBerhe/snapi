@@ -75,7 +75,7 @@ The tool reads a JSON file structured as follows:
 To run the tool, you can use a command like:
 
 ```bash
-go run .\cmd/main.go .\test.json
+go run .\cmd\main.go .\test.json
 ```
 
 Replace `tests.json` with the path to your JSON configuration file.
