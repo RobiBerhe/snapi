@@ -4,7 +4,7 @@
         "apis":[
           
             {
-              "pass":true,
+              "skip":true,
                 "name":"create user",
                 "method":"POST",
                 "route":"/users",
