@@ -89,3 +89,7 @@ The tool outputs a report indicating:
 ## Contributions
 
 Contributions are welcome! Feel free to submit issues or pull requests to improve the tool’s functionality.
+
+## License
+This project is licensed under the Apache License 2.0. See the [LICENSE](./LICENSE) file for details.
+
