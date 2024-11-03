@@ -27,17 +27,13 @@
               "name":"get single user",
               "method":"GET",
               "route":"/users/1",
-              "payload":{
-                "name":"abebe",
-                "email":"abebe@gmail.com"
-              },
               "expects":{
                 "status":200,
                 "exclude":["id","created_at"],
                  "body":{
                   "user":{
-                    "name":"abebe",
-                    "email":"abebe@gmail.com"
+                    "name":"jane",
+                    "email":"jane@gmail.com"
                   }
                  }
               }
@@ -51,21 +47,24 @@
               "exclude":["id","created_at"],
                "body":{
                 "users": [
-                          {
-                            "id": 1,
-                            "name": "John Doe",
-                            "email": "john@example.com"
-                          },
-                          {
-                            "id": 2,
-                            "name": "Jane Smith",
-                            "email": "jane@example.com"
-                          },
-                          {
-                            "id": 3,
-                            "name": "Bob Wilson",
-                            "email": "bob@example.com"
-                          }
+                  {
+                    "id": 1,
+                    "name": "John Doe",
+                    "email": "john@example.com",
+                    "created_at": "2024-11-03T01:42:22.8059843-08:00"
+                  },
+                  {
+                    "id": 2,
+                    "name": "Jane Smith",
+                    "email": "jane@example.com",
+                    "created_at": "2024-11-03T01:42:22.8059843-08:00"
+                  },
+                  {
+                    "id": 3,
+                    "name": "Bob Wilson",
+                    "email": "bob@example.com",
+                    "created_at": "2024-11-03T01:42:22.8059843-08:00"
+                  }
 	                    ]
                }
             }

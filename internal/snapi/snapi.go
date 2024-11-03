@@ -1,4 +1,4 @@
-package internal
+package snapi
 
 import (
 	"bytes"

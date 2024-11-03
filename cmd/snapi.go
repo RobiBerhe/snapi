@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 	"os"
-	"snapi/internal"
+	"snapi/internal/snapi"
 )
 
 func main() {
@@ -13,7 +13,7 @@ func main() {
 	}
 	path := args[0]
 	log.Println("file path :> ", path)
-	tests := internal.NewTestSpecJson(path).ReadJSON()
-	runTests := internal.Test(tests)
+	tests := snapi.NewTestSpecJson(path).ReadJSON()
+	runTests := snapi.Test(tests)
 	runTests.Run()
 }
