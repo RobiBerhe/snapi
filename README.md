@@ -1,5 +1,5 @@
 
-# API Testing Tool
+# Snapi
 
 This tool automates API testing by reading a JSON configuration file and validating each API endpoint based on the specified request details and expected responses. It’s designed to streamline testing by allowing you to define tests in a structured format.
 
