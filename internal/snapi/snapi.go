@@ -40,6 +40,9 @@ type TestSpecJSON struct {
 	file *os.File
 }
 
+// creates a new json spec given the path of a .json file
+//
+// filePath:string the file path for the json file
 func NewTestSpecJson(filePath string) *TestSpecJSON {
 	ts := &TestSpecJSON{}
 	file, err := os.Open(filePath)
@@ -50,6 +53,7 @@ func NewTestSpecJson(filePath string) *TestSpecJSON {
 	return ts
 }
 
+// decodes the given file (json) into a test spec
 func (ts *TestSpecJSON) ReadJSON() *TestSpecJSON {
 	decoder := json.NewDecoder(ts.file)
 	if err := decoder.Decode(&ts); err != nil {
@@ -68,10 +72,12 @@ type TestAPI struct {
 	TestSpecJSON
 }
 
+// creates a an api test
 func Test(ts *TestSpecJSON) *TestAPI {
 	return &TestAPI{TestSpecJSON: *ts}
 }
 
+// calls an api
 func (ta *TestAPI) call(api *API) ([]byte, int) {
 	base := ta.TestSpecJSON.Tests.BaseURL
 	var req *http.Request
@@ -105,6 +111,7 @@ func (ta *TestAPI) call(api *API) ([]byte, int) {
 	return body, res.StatusCode
 }
 
+// runs through an api's response and checks/compares it against what's expected
 func (ta *TestAPI) passExpects(body []byte, api *API) error {
 	exData, exerr := json.Marshal(api.Expects.Body)
 	log.Println("excluded fields will be :> ", api.Expects.Exclude)
@@ -137,6 +144,7 @@ func (ta *TestAPI) passExpects(body []byte, api *API) error {
 	return nil
 }
 
+// checks if an api request passed a status code check
 func (ta *TestAPI) PassStatus(status int, apiStatus int) error {
 	if apiStatus <= 0 {
 		return nil
@@ -147,6 +155,7 @@ func (ta *TestAPI) PassStatus(status int, apiStatus int) error {
 	return fmt.Errorf("expected status %d but found %v", apiStatus, status)
 }
 
+// executes tests
 func (ta *TestAPI) Run() {
 	apis := ta.TestSpecJSON.Tests.Apis
 	log.Println("-----------TESTS RUNNING-----------")
