@@ -1,0 +1,54 @@
+---
+tests:
+  base_url: http://localhost:8080/api
+  apis:
+  - skip: true
+    name: create user
+    method: POST
+    route: "/users"
+    payload:
+      name: kebede
+      email: kebede@gmail.com
+    expects:
+      status: 200
+      exclude:
+      - id
+      - created_at
+      body:
+        user:
+          name: kebede
+          email: kebede@gmail.com
+  - name: get single user
+    method: GET
+    route: "/users/1"
+    expects:
+      status: 200
+      exclude:
+      - id
+      - created_at
+      body:
+        user:
+          name: jane
+          email: jane@gmail.com
+  - name: get all users
+    method: GET
+    route: "/users"
+    expects:
+      status: 200
+      exclude:
+      - id
+      - created_at
+      body:
+        users:
+        - id: 1
+          name: John Doe
+          email: john@example.com
+          created_at: '2024-11-03T01:42:22.8059843-08:00'
+        - id: 2
+          name: Jane Smith
+          email: jane@example.com
+          created_at: '2024-11-03T01:42:22.8059843-08:00'
+        - id: 3
+          name: Bob Wilson
+          email: bob@example.com
+          created_at: '2024-11-03T01:42:22.8059843-08:00'
